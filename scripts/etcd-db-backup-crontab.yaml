@@ -1,0 +1,57 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: etcd-backup
+  namespace: crontab
+spec:
+ schedule: "* * * * *"
+ jobTemplate:
+  spec:
+    template:
+      metadata:
+       labels:
+        name: etcd-backup
+      spec:
+        tolerations:
+        - key: node-role.kubernetes.io/master
+          operator: Exists
+          effect: NoSchedule
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: In
+                  values:
+                  - master-test-3
+        containers:
+        - name: etcd
+          image: registry.aliyuncs.com/k8sxio/etcd:3.4.3-0
+          env:
+          - name: ETCDCTL_API
+            value: "3"
+          command:
+          - sh
+          - -c
+          - "etcdctl --endpoints=https://172.38.40.212:2379 \
+            --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+            --key=/etc/kubernetes/pki/etcd/healthcheck-client.key \
+            --cert=/etc/kubernetes/pki/etcd/healthcheck-client.crt \
+            snapshot save /backup/etcd.db-$(date +%F)
+            "
+          volumeMounts:
+            - mountPath: /backup
+              name: etcd-db-backup
+            - mountPath: /etc/kubernetes/pki/etcd
+              name: etcd-certs
+              readOnly: true
+        volumes:
+        - hostPath:
+            path: /opt/etcd-db-backup
+          name: etcd-db-backup
+        - hostPath:
+            path: /etc/kubernetes/pki/etcd
+          name: etcd-certs
+        hostNetwork: true
+        restartPolicy: Never

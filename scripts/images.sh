@@ -1,0 +1,10 @@
+Images=(
+registry.aliyuncs.com/k8sxio/kube-apiserver:v1.19.2
+registry.aliyuncs.com/k8sxio/kube-controller-manager:v1.19.2
+registry.aliyuncs.com/k8sxio/kube-scheduler:v1.19.2
+registry.aliyuncs.com/k8sxio/kube-proxy:v1.19.2
+registry.aliyuncs.com/k8sxio/pause:3.2
+registry.aliyuncs.com/k8sxio/etcd:3.4.13-0
+registry.aliyuncs.com/k8sxio/coredns:1.7.0
+quay.io/coreos/flannel:v0.12.0-amd64
+)
