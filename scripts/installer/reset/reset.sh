@@ -15,4 +15,6 @@ iptables -X
 iptables -F -t nat
 iptables -X -t nat
 ipvsadm --clear
-ip link del kube-ipvs0
+if [[ $(ip link show | grep kube-ipvs0) ]];then
+	ip link del kube-ipvs0
+fi
