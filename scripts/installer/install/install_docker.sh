@@ -7,7 +7,7 @@ source /root/downloads/variables.sh
 function online(){
     yum install -y yum-utils device-mapper-persistent-data lvm2 > /dev/null
     yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo > /dev/null
-    yum install -y docker-ce-${DockerVersion} > /dev/null
+    yum install -y docker-ce-${DockerVersion} docker-ce-cli-${DockerVersion} > /dev/null
 }
 
 # offline 离线安装

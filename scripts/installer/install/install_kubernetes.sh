@@ -52,6 +52,8 @@ function KubernetesConfig(){
     source /root/downloads/config/k8s_sysctl_conf.sh
 }
 
+echo -e "\033[32m ====> ${HostName} 安装 k8s 三件套 \033[0m"
 KubernetesInstall
 
+echo -e "\033[32m ====> ${HostName} 配置 k8s 运行环境 \033[0m"
 KubernetesConfig
