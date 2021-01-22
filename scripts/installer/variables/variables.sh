@@ -22,7 +22,7 @@ DefaultAddressPools='10.38.0.0/16'
 
 # keepalived 配置
 KeepalivedVersion='1.3.5'
-InterfaceName='ens192'
+InterfaceName='eth0'
 
 # kubernetes 配置
 K8SVersion='v1.19.2'
