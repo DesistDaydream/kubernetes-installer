@@ -57,7 +57,7 @@ while true; do
     case "$1" in
     --debug)
         echo "测试单独的功能"
-        init; confirm; source ${WorkDir}/executer/gen_hosts.sh; exit 0;;
+        init; confirm; source ${WorkDir}/config/kubeadm_config.sh; exit 0;;
     -f|--force)
         echo "添加强制执行参数，待补充"; shift;;
     -h|--help)

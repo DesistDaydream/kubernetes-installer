@@ -5,7 +5,7 @@ set -o pipefail
 # GenCertSANS 生成 API Server 证书
 # 通过 sed 在 certSANs字段下面添加内容
 function GenCertSANS(){
-    for node in ${AllNodes[@]}; do
+    for node in ${Masters[@]}; do
         IP=${node%%=*}
         HostName=${node##*=}
         sed -i "/certSANs/a\ \ - ${IP}" /tmp/kubeadm-config.yaml
