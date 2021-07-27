@@ -19,10 +19,10 @@ function GenJoinCMD(){
 }
 
 # MasterJoinCluster 让所有 master 加入集群
-function MasterJoinCluster(){    
+function MasterJoinCluster(){
     for master in "${Masters[@]:1}"; do
         IP=${master%%=*}
-        
+
         case $(Check) in
         "ok")
             echo -e "\033[31m ${master##*=} 节点已加入集群，不用再次加入 \033[0m"
@@ -43,7 +43,7 @@ function MasterJoinCluster(){
 
 # NodeJoinCluster 让所有 node 加入集群
 function NodeJoinCluster(){
-    for node in ${Nodes[@]}; do        
+    for node in ${Nodes[@]}; do
         IP=${node%%=*}
 
         case $(Check) in
@@ -53,7 +53,7 @@ function NodeJoinCluster(){
         *)
             sshpass -p ${Password} ssh -T root@${IP} "${NodeJoinCMD}" &
             ;;
-        esac        
+        esac
     done
     wait
 }

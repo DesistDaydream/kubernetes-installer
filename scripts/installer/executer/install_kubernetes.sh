@@ -6,10 +6,10 @@ set -o pipefail
 function execute(){
     for node in ${AllNodes[@]}; do
         IP=${node%%=*}
-        sshpass -p ${Password} ssh -T root@${IP} < ${WorkDir}/install/install_kubernetes.sh &
+        sshpass -p ${Password} ssh -T root@${IP} < ${WorkDir}/install/install_kubernetes.sh > /dev/null &
     done
     wait
-    
+
     # 拷贝具有100年证书的特殊 kubeadm 到所有节点
     echo -e "\033[32m ====> 拷贝100年证书的 kubeadm 到各节点！请稍后.... \033[0m"
     chmod 755 ${WorkDir}/package/kubeadm

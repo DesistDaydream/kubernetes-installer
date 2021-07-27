@@ -21,7 +21,7 @@ function KeepalivedInstall(){
     "yes")
         online
         ;;
-    "no") 
+    "no")
         offline
         ;;
     *)

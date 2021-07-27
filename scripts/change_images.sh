@@ -8,7 +8,7 @@ function Executer(){
 	for Image in ${Images[@]}; do
 		RegistrySrc="${Image%/*}"
 		ImagesName="${Image##*/}"
-		$1 & 
+		$1 &
 	done
 	rm -f /root/.docker/config.json
 }

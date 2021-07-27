@@ -12,10 +12,8 @@ function online(){
 
 # offline 离线安装
 function offline(){
-    sshpass -p ${Password} scp \
-    ${WorkDir}/package/kubeadm-let-ctl-${K8SVersion}.tar.gz \
-    ${WorkDir}/package/docker-ce-${DockerVersion}.tar.gz \
-    ${WorkDir}/package/k8s-images-${K8SVersion}.tar.gz \
+    sshpass -p ${Password} scp -r \
+    ${WorkDir}/package/* \
     ${WorkDir}/variables/variables.sh \
     root@${IP}:/root/downloads
     sshpass -p ${Password} scp ${WorkDir}/config/* root@${IP}:/root/downloads/config/

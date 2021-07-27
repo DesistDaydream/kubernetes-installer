@@ -6,7 +6,7 @@ set -o pipefail
 function Reset(){
     for node in ${AllNodes[@]}; do
         IP=${node%%=*}
-        sshpass -p ${Password} ssh -o StrictHostKeyChecking=no -T root@${IP}  < ${WorkDir}/reset/reset.sh
+        sshpass -p ${Password} ssh -o StrictHostKeyChecking=no -T root@${IP}  < ${WorkDir}/reset/reset.sh > /dev/null
     done
     wait
 }

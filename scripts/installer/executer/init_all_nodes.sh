@@ -5,7 +5,7 @@ set -o pipefail
 # DeploymentNodes 逐一部署集群中的所有节点，为初始化集群做准备
 function InitNodes(){
     # 分发文件
-    source ${WorkDir}/executer/send_files.sh 
+    source ${WorkDir}/executer/send_files.sh
 
     # 配置主机名与hosts文件
     source ${WorkDir}/executer/gen_hosts.sh

@@ -20,7 +20,7 @@ EOF
     for i in ${!AllNodes[@]}; do
         sed -i "/hosts END/i${AllNodes[${i}]%%=*} ${AllNodes[${i}]##*=}" /etc/hosts
     done
-    
+
     # 根据 master 数量，生成与 api 交互的域名解析
     if [[ "${#Masters[@]}" -gt "1" ]]; then APIIP=${VIP}; else APIIP=${Masters[0]%%=*}; fi
     sed -i "/hosts END/i${APIIP} ${Domain}" /etc/hosts

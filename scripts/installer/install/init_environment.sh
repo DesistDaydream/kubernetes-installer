@@ -3,9 +3,11 @@ set -ue
 set -o pipefail
 #
 # EnviromentInit 初始化系统环境
-function EnviromentInit(){    
-    systemctl stop firewalld.service; systemctl disable firewalld.service
-    sed -i 's@^\(SELINUX=\).*@\1disabled@' /etc/selinux/config
+function EnviromentInit(){
+    if [[ `systemctl status firewalld.service` == "0" ]]; then
+        systemctl stop firewalld.service; systemctl disable firewalld.service
+    fi
+    if [[ -e /etc/selinux/config ]];then sed -i 's@^\(SELINUX=\).*@\1disabled@' /etc/selinux/config; fi
     if setenforce 0; then echo "关闭 selinux"; fi
     swapoff -a
     sed -i 's@^[^#]\(.*swap.*\)@#\1@g' /etc/fstab

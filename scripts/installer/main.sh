@@ -66,11 +66,11 @@ while true; do
         init; confirm; source ${WorkDir}/deployment/deployment.sh; shift;;
     -j|--join)
         init; confirm; NewNodes=($2); source ${WorkDir}/executer/join_new.sh; shift 2;;
-    -p|--passwd) 
+    -p|--passwd)
         Password=$2; shift 2;;
     --reset)
         init; confirm; source ${WorkDir}/executer/reset.sh; shift;;
-    --) 
+    --)
         shift
         break
         ;;

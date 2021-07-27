@@ -13,12 +13,12 @@
 ### 规划主机(必须修改项)
 **主机名必须是 `master-X.XXXX` 这种形式，如果 master 节点仅需一个，则主机名必须是 `master.XXX` 这种形式**
 ```shell
-Masters=(  
+Masters=(
 '172.38.40.212=master-1.tj-test'
 '172.38.40.213=master-2.tj-test'
 '172.38.40.214=master-3.tj-test'
-)  
-Nodes=(  
+)
+Nodes=(
 '172.38.40.216=node-1.tj-test'
 '172.38.40.217=node-2.tj-test'
 )
@@ -49,7 +49,7 @@ InterfaceName=ens192 # keepalived 所用网络设备，用于生成 VIP
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
     inet 127.0.0.1/8 scope host lo
        valid_lft forever preferred_lft forever
-    inet6 ::1/128 scope host 
+    inet6 ::1/128 scope host
        valid_lft forever preferred_lft forever
 2: ens192: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
     link/ether 00:0c:29:64:50:5a brd ff:ff:ff:ff:ff:ff
@@ -68,3 +68,35 @@ RegistryHost='registry.tj-test.ehualu.com'
 略
 
 配置完成后，执行 `bash main.sh -p 你的密码 --install` 命令部署 k8s 环境
+
+# 要求和建议
+* 最低资源要求
+  * 2 个 vCPU
+  * 4 GB 内存
+  * 20 GB 存储空间
+
+> /var/lib/docker 主要用于存放容器数据，在使用和运行过程中会逐渐变大。如果是生产环境，建议 /var/lib/docker 单独挂载一个驱动。
+
+* 操作系统要求：
+  * `SSH` 可以访问所有节点。
+  * 所有节点的时间同步。
+  * `sudo`/`curl`/`openssl` 应该在所有节点中使用。
+  * `docker` 可以自己安装，也可以通过 KubeKey 安装。
+  * `Red Hat` 在它的 `Linux release` 中包含了 `SELinux`。建议关闭SELinux或【切换SELinux模式】(./docs/turn-off-SELinux.md)为`Permissive`
+> * 建议您的操作系统是干净的（没有安装任何其他软件），否则可能会发生冲突。  
+> * 如果在dockerhub.io 下载镜像有问题，建议准备一个容器镜像（加速器）。[为 Docker 守护进程配置注册表镜像](https://docs.docker.com/registry/recipes/mirror/#configure-the-docker-daemon)。
+> * 如果在复制时遇到`Permission denied`，建议先勾选【SELinux 并关闭】(./docs/turn-off-SELinux.md) 
+
+* 依赖要求：
+
+下面的依赖，使用包管理工具即可安装
+| | |
+| ----------- | ------------------------- |
+| `socat` | 必填 |
+| `conntrack` | 必填 |
+| `ebtables` | 可选但推荐 |
+| `ipset` | 可选但推荐 |
+
+* 网络和 DNS 要求：
+  * 确保`/etc/resolv.conf` 中的DNS 地址可用。否则，可能会导致集群中的 DNS 出现一些问题。
+  * 如果您的网络配置使用防火墙或安全组，您必须确保基础设施组件可以通过特定端口相互通信。建议您关闭防火墙或按照链接配置：[NetworkAccess](docs/network-access.md)。

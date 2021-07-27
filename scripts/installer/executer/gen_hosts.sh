@@ -7,8 +7,8 @@ function execute(){
     for node in ${AllNodes[@]}; do
         IP=${node%%=*}
         HostName=${node##*=}
-        sshpass -p ${Password} ssh -T root@${IP} < ${WorkDir}/install/gen_hosts.sh &
-        sshpass -p ${Password} ssh -T root@${IP} hostnamectl set-hostname ${HostName} &
+        sshpass -p ${Password} ssh -T root@${IP} < ${WorkDir}/install/gen_hosts.sh > /dev/null &
+        sshpass -p ${Password} ssh -T root@${IP} hostnamectl set-hostname ${HostName} > /dev/null &
     done
     wait
     echo -e "\033[32m ====> hosts 文件已生成 \033[0m"

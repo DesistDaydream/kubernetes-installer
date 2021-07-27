@@ -20,7 +20,7 @@ else
 fi
 
 # checkIP 检查用户输入的IP是否合法
-function checkIP(){   
+function checkIP(){
     VALID_CHECK=$(echo $IP|awk -F. '$1<=255&&$2<=255&&$3<=255&&$4<=255{print "yes"}')
     if echo ${IP} | grep -E "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$" > /dev/null; then
         if [ ${VALID_CHECK:-no} != "yes" ]; then
@@ -32,11 +32,11 @@ function checkIP(){
 }
 
 # confirmNew 确认新增节点信息,并检查命令行输入的 IP 格式
-function confirmNew(){    
+function confirmNew(){
     for newnode in ${NewNodes[@]}; do
         IP=${newnode%%=*}
         echo -e "\033[31m ${newnode%%=*} ${newnode##*=} \033[0m"
-        checkIP      
+        checkIP
     done
     echo "root密码为：${Password},错了可没法执行呦~"
         read -p "请确认以上信息是否要新增的节点(yes/no):" Confirm
@@ -64,9 +64,9 @@ function Check(){
 
 # NodeJoinCluster 让所有 node 加入集群
 function JoinNew(){
-    for node in ${NewNodes[@]}; do        
+    for node in ${NewNodes[@]}; do
         IP=${node%%=*}
-        HostName=${node##*=}        
+        HostName=${node##*=}
         case $(Check) in
         "ok")
             echo -e "\033[31m ${node##*=} 节点已加入集群，不用再次加入 \033[0m"
@@ -74,7 +74,7 @@ function JoinNew(){
         *)
             source ${WorkDir}/join/join_new.sh
             ;;
-        esac        
+        esac
     done
     wait
 }

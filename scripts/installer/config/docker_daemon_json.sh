@@ -2,8 +2,8 @@
 set -ue
 set -o pipefail
 #
-if [[ `grep "iptables" /usr/lib/systemd/system/docker.service` != "0" ]]; then
-    sed -i "14i ExecStartPost=/usr/sbin/iptables -P FORWARD ACCEPT" /usr/lib/systemd/system/docker.service
+if [[ `grep "iptables" /etc/systemd/system/docker.service` != "0" ]]; then
+    sed -i "14i ExecStartPost=/usr/sbin/iptables -P FORWARD ACCEPT" /etc/systemd/system/docker.service
 fi
 
 mkdir -p /etc/docker
