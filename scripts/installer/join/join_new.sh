@@ -15,7 +15,7 @@ function initNewNode(){
 
     # 安装kubeadm kubectl kubelet
     sshpass -p ${Password} ssh -T root@${IP} < ${WorkDir}/install/install_kubernetes.sh
-    # sshpass -p ${Password} scp ${WorkDir}/rpm/kubeadm root@${IP}:/usr/bin/kubeadm
+    # sshpass -p ${Password} scp ${WorkDir}/package/kubeadm root@${IP}:/usr/bin/kubeadm
 }
 
 # genJoinCMD 生成加入集群命令

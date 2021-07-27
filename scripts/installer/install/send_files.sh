@@ -13,14 +13,14 @@ function online(){
 # offline 离线安装
 function offline(){
     sshpass -p ${Password} scp \
-    ${WorkDir}/rpm/kubeadm-let-ctl-${K8SVersion}.tar.gz \
-    ${WorkDir}/rpm/docker-ce-${DockerVersion}.tar.gz \
-    ${WorkDir}/rpm/k8s-images-${K8SVersion}.tar.gz \
+    ${WorkDir}/package/kubeadm-let-ctl-${K8SVersion}.tar.gz \
+    ${WorkDir}/package/docker-ce-${DockerVersion}.tar.gz \
+    ${WorkDir}/package/k8s-images-${K8SVersion}.tar.gz \
     ${WorkDir}/variables/variables.sh \
     root@${IP}:/root/downloads
     sshpass -p ${Password} scp ${WorkDir}/config/* root@${IP}:/root/downloads/config/
     if [[ "${Masters[@]}" =~ "${node}" ]] && [[ "${#Masters[@]}" -gt "1" ]]; then
-        sshpass -p ${Password} scp ./rpm/keepalived-${KeepalivedVersion}.tar.gz root@${IP}:/root/downloads
+        sshpass -p ${Password} scp ./package/keepalived-${KeepalivedVersion}.tar.gz root@${IP}:/root/downloads
     fi
 }
 

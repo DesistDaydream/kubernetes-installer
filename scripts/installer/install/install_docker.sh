@@ -12,8 +12,7 @@ function online(){
 
 # offline 离线安装
 function offline(){
-    tar -zxvf /root/downloads/docker-ce-${DockerVersion}.tar.gz -C /root/downloads > /dev/null
-    yum localinstall -y /root/downloads/docker-ce-${DockerVersion}/* > /dev/null
+    tar -zxvf /root/downloads/docker-ce-${DockerVersion}.tar.gz -C / > /dev/null
 }
 
 # DockerInstall 安装 docker
@@ -35,7 +34,6 @@ function DockerInstall(){
 # DockerConfig 配置 docker 运行时环境以及参数
 function DockerConfig(){
     source /root/downloads/config/docker_daemon_json.sh
-    source /root/downloads/config/docker_sysctl_conf.sh
 }
 
 HostName=$(hostname)

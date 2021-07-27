@@ -13,7 +13,7 @@ function online(){
 # offline 离线安装
 function offline(){
     sshpass -p ${Password} scp \
-    ${WorkDir}/rpm/keepalived-${KeepalivedVersion}.tar.gz \
+    ${WorkDir}/package/keepalived-${KeepalivedVersion}.tar.gz \
     ${WorkDir}/variables/variables.sh \
     root@${IP}:/root/downloads
 

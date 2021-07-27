@@ -16,7 +16,7 @@ VIP='172.38.40.215'
 online='no'
 
 # docker 配置
-DockerVersion='19.03.11'
+DockerVersion='20.10.6'
 InsecureRegistries='"registry.tj-test.ehualu.com","172.38.50.130"'
 DefaultAddressPools='10.38.0.0/16'
 
