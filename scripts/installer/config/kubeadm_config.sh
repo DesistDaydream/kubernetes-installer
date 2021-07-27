@@ -48,6 +48,10 @@ etcd:
       listen-metrics-urls: http://0.0.0.0:2381
 apiServer:
   certSANs:
+  - localhost
+  - 127.0.0.1
+  - ${Domain}
+  - ${VIP}
   extraArgs:
     service-node-port-range: 30000-60000
   extraVolumes:
@@ -92,7 +96,7 @@ evictionSoft:
 evictionSoftGracePeriod:
   memory.available: 2m
 EOF
-    GenCertSANS
+    # GenCertSANS
     sshpass -p ${Password} ssh -T root@${Masters[0]%%=*} "mkdir -p /root/kubernetes/CNI"
     sshpass -p ${Password} scp /tmp/kubeadm-config.yaml root@${Masters[0]%%=*}:/root/kubernetes/kubeadm-config.yaml
 }

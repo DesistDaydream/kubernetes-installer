@@ -22,8 +22,12 @@ EOF
 # offline 离线安装
 function offline(){
     echo -e "\033[32m ${HostName} 解压安装包并安装 kubernetes 组件 \033[0m"
-    tar -zxvf /root/downloads/kubeadm-let-ctl-${K8SVersion}.tar.gz -C /root/downloads > /dev/null
-    yum localinstall -y /root/downloads/kubeadm-let-ctl-${K8SVersion}/* > /dev/null
+    mkdir -p /opt/cni/bin
+    tar -zxvf -C /root/downloads/cni-plugins-linux-amd64-${CNIPluginVersion}.tgz /opt/cni/bin
+    chmod +x /root/downloads/{kubeadm,kubelet,kubectl}
+    cp /root/downloads/{kubeadm,kubectl,kubelet} /usr/bin/
+    cp /root/downloads/kubelet.service /usr/lib/systemd/system/kubelet.service
+    cp /root/downloads/10-kubeadm.conf /usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf
 
     echo -e "\033[32m ${HostName} 正在解压镜像，请稍后.....Zzzz，请冲杯咖啡休息一下，\033[0m\033[31m不要强行退出哦！\033[0m"
     if [[ ! -f '/root/downloads/k8s-images.tar' ]]; then gzip -d /root/downloads/k8s-images-${K8SVersion}.tar.gz; fi

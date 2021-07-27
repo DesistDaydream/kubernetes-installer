@@ -1,16 +1,16 @@
 # 规划主机
-Masters=(
-'172.38.40.212=master-1.tj-test'
-'172.38.40.213=master-2.tj-test'
-'172.38.40.214=master-3.tj-test'
-)
-Nodes=(
-'172.38.40.216=node-1.tj-test'
-'172.38.40.217=node-2.tj-test'
-'172.38.40.218=node-3.tj-test'
-)
-Domain='k8s-api.tj-test.ehualu.local'
-VIP='172.38.40.215'
+# Masters=(
+# '172.38.40.212=master-1.tj-test'
+# '172.38.40.213=master-2.tj-test'
+# '172.38.40.214=master-3.tj-test'
+# )
+# Nodes=(
+# '172.38.40.216=node-1.tj-test'
+# '172.38.40.217=node-2.tj-test'
+# '172.38.40.218=node-3.tj-test'
+# )
+# Domain='k8s-api.tj-test.datalake.cn'
+# VIP='172.38.40.215'
 
 # 通用配置
 online='no'
@@ -25,6 +25,7 @@ KeepalivedVersion='1.3.5'
 InterfaceName='eth0'
 
 # kubernetes 配置
+CNIPluginVersion='v0.8.7'
 K8SVersion='v1.19.2'
 ImageRepository='registry.aliyuncs.com/k8sxio'
 DnsDomain='cluster.local'
@@ -39,11 +40,12 @@ RegistryIP='172.38.50.130'
 RegistryHost='registry.tj-test.ehualu.com'
 
 # 测试
-# Masters=(
-# '172.38.40.250=master'
-# )
-# Nodes=(
-# '172.38.40.219=node-1'
-# )
-# Domain='k8s-api.tj-test.ehualu.local'
-# VIP='172.38.40.250'
+Masters=(
+'172.19.42.207=master'
+)
+Nodes=(
+'172.19.42.208=node-1'
+'172.19.42.209=node-2'
+)
+Domain='k8s-api.bj-test-2.datalake.cn'
+VIP='172.19.42.206'
