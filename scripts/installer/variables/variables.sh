@@ -16,7 +16,7 @@
 online='no'
 
 # docker 配置
-DockerVersion='20.10.6'
+DockerVersion='19.03.11'
 InsecureRegistries='"registry.tj-test.ehualu.com","172.38.50.130"'
 DefaultAddressPools='10.38.0.0/16'
 
@@ -48,6 +48,7 @@ Masters=(
 Nodes=(
 '172.19.42.246=node-1'
 '172.19.42.247=node-2'
+'172.19.42.244=node-3'
 )
 Domain='k8s-api.bj-test-2.datalake.cn'
 VIP='172.19.42.206'
