@@ -23,13 +23,13 @@ EOF
 function offline(){
     echo -e "\033[32m ${HostName} 解压安装包并安装 kubernetes 组件 \033[0m"
     mkdir -p /opt/cni/bin
-    tar -zxvf /root/downloads/cni-plugins-linux-amd64-${CNIPluginVersion}.tgz -C /opt/cni/bin
-    chmod +x /root/downloads/{kubeadm,kubelet,kubectl}
-    cp /root/downloads/{kubeadm,kubectl,kubelet} /usr/bin/
-    cp /root/downloads/kubelet.service /usr/lib/systemd/system/kubelet.service
-    mkdir -p /usr/lib/systemd/system/kubelet.service.d
-    cp /root/downloads/10-kubeadm.conf /usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf
-    systemctl enable kubelet.service --now
+    tar -zxvf /root/downloads/cni-plugins-linux-amd64-${CNIPluginVersion}.tgz -C /opt/cni/bin > /dev/null
+    chmod +x /root/downloads/{kubeadm,kubelet,kubectl} > /dev/null
+    cp /root/downloads/{kubeadm,kubectl,kubelet} /usr/bin/ > /dev/null
+    cp /root/downloads/kubelet.service /usr/lib/systemd/system/kubelet.service > /dev/null
+    mkdir -p /usr/lib/systemd/system/kubelet.service.d > /dev/null
+    cp /root/downloads/10-kubeadm.conf /usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf > /dev/null
+    systemctl enable kubelet.service --now > /dev/null
 
     echo -e "\033[32m ${HostName} 正在解压镜像，请稍后.....Zzzz，请冲杯咖啡休息一下，\033[0m\033[31m不要强行退出哦！\033[0m"
     if [[ ! -f "/root/downloads/k8s-images-${K8SVersion}.tar" ]]; then gzip -d /root/downloads/k8s-images-${K8SVersion}.tar.gz; fi
