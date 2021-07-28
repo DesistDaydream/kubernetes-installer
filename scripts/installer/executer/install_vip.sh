@@ -6,7 +6,7 @@ set -o pipefail
 function execute(){
     for master in ${Masters[@]}; do
         IP=${master%%=*}
-        sshpass -p ${Password} ssh -T root@${IP} < ${WorkDir}/install/install_vip.sh > /dev/null &
+        sshpass -p ${Password} ssh -T root@${IP} < ${WorkDir}/install/install_vip.sh &
     done
     wait
     echo -e "\033[32m ====> vip 安装完成 \033[0m"

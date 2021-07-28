@@ -6,7 +6,7 @@ set -o pipefail
 function execute(){
     for node in ${AllNodes[@]}; do
         IP=${node%%=*}
-        sshpass -p ${Password} ssh -T root@${IP} < ${WorkDir}/install/install_kubernetes.sh > /dev/null &
+        sshpass -p ${Password} ssh -T root@${IP} < ${WorkDir}/install/install_kubernetes.sh &
     done
     wait
 

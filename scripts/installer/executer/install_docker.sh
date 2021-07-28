@@ -6,7 +6,7 @@ set -o pipefail
 function execute(){
     for node in ${AllNodes[@]}; do
         IP=${node%%=*}
-        sshpass -p ${Password} ssh -T root@${IP} < ${WorkDir}/install/install_docker.sh > /dev/null &
+        sshpass -p ${Password} ssh -T root@${IP} < ${WorkDir}/install/install_docker.sh &
     done
     wait
     echo -e "\033[32m ====> 各节点 docker-ce 安装完成 \033[0m"
