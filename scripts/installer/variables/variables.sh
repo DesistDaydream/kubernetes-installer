@@ -20,9 +20,9 @@ DockerVersion='20.10.6'
 InsecureRegistries='"registry.tj-test.ehualu.com","172.38.50.130"'
 DefaultAddressPools='10.38.0.0/16'
 
-# keepalived 配置
-KeepalivedVersion='1.3.5'
-InterfaceName='eth0'
+# VIP 配置
+kubeVIP='v0.3.7'
+InterfaceName='ens3'
 
 # kubernetes 配置
 CNIPluginVersion='v0.8.7'
@@ -41,11 +41,13 @@ RegistryHost='registry.tj-test.ehualu.com'
 
 # 测试
 Masters=(
-'172.19.42.207=master'
+'172.19.42.207=master-1'
+'172.19.42.208=master-2'
+'172.19.42.209=master-3'
 )
 Nodes=(
-'172.19.42.208=node-1'
-'172.19.42.209=node-2'
+'172.19.42.246=node-1'
+'172.19.42.247=node-2'
 )
 Domain='k8s-api.bj-test-2.datalake.cn'
 VIP='172.19.42.206'

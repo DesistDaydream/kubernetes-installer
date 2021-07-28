@@ -22,8 +22,9 @@ EOF
     done
 
     # 根据 master 数量，生成与 api 交互的域名解析
-    if [[ "${#Masters[@]}" -gt "1" ]]; then APIIP=${VIP}; else APIIP=${Masters[0]%%=*}; fi
-    sed -i "/hosts END/i${APIIP} ${Domain}" /etc/hosts
+    # if [[ "${#Masters[@]}" -gt "1" ]]; then APIIP=${VIP}; else APIIP=${Masters[0]%%=*}; fi
+    # sed -i "/hosts END/i${APIIP} ${Domain}" /etc/hosts
+    sed -i "/hosts END/i${VIP} ${Domain}" /etc/hosts
 
     sed -i "/hosts END/i${RegistryIP} ${RegistryHost}" /etc/hosts
 }

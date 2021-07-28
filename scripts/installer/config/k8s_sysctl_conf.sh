@@ -11,4 +11,4 @@ net.ipv4.tcp_keepalive_intvl = 30
 net.ipv4.tcp_keepalive_probes = 10
 vm.max_map_count = 262144
 EOF
-sysctl -p /etc/sysctl.d/* > /dev/null
+sysctl -p /etc/sysctl.d/k8s-sysctl.conf > /dev/null

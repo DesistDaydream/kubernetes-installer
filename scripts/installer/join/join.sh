@@ -28,7 +28,7 @@ function MasterJoinCluster(){
             echo -e "\033[31m ${master##*=} 节点已加入集群，不用再次加入 \033[0m"
             ;;
         *)
-            sshpass -p ${Password} ssh -T root@${IP} "${MasterJoinCMD}"
+            sshpass -p ${Password} ssh -T root@${IP} "${MasterJoinCMD} --ignore-preflight-errors=DirAvailable--etc-kubernetes-manifests"
             # 配置 kubectl 命令
             sshpass -p ${Password} ssh -T root@${IP} "
             mkdir -p $HOME/.kube

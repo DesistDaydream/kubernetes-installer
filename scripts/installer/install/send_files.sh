@@ -16,10 +16,11 @@ function offline(){
     ${WorkDir}/package/* \
     ${WorkDir}/variables/variables.sh \
     root@${IP}:/root/downloads
+
     sshpass -p ${Password} scp ${WorkDir}/config/* root@${IP}:/root/downloads/config/
-    if [[ "${Masters[@]}" =~ "${node}" ]] && [[ "${#Masters[@]}" -gt "1" ]]; then
-        sshpass -p ${Password} scp ./package/keepalived-${KeepalivedVersion}.tar.gz root@${IP}:/root/downloads
-    fi
+    # if [[ "${Masters[@]}" =~ "${node}" ]] && [[ "${#Masters[@]}" -gt "1" ]]; then
+    #     sshpass -p ${Password} scp ./package/keepalived-${KeepalivedVersion}.tar.gz root@${IP}:/root/downloads
+    # fi
 }
 
 # SendFiles 分发部署所需离线安装包

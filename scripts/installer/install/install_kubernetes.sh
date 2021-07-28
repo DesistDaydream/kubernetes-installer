@@ -29,9 +29,10 @@ function offline(){
     cp /root/downloads/kubelet.service /usr/lib/systemd/system/kubelet.service
     mkdir -p /usr/lib/systemd/system/kubelet.service.d
     cp /root/downloads/10-kubeadm.conf /usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf
+    systemctl enable kubelet.service --now
 
     echo -e "\033[32m ${HostName} 正在解压镜像，请稍后.....Zzzz，请冲杯咖啡休息一下，\033[0m\033[31m不要强行退出哦！\033[0m"
-    if [[ ! -f '/root/downloads/k8s-images.tar' ]]; then gzip -d /root/downloads/k8s-images-${K8SVersion}.tar.gz; fi
+    if [[ ! -f "/root/downloads/k8s-images-${K8SVersion}.tar" ]]; then gzip -d /root/downloads/k8s-images-${K8SVersion}.tar.gz; fi
     docker load -i /root/downloads/k8s-images-${K8SVersion}.tar > /dev/null
 }
 

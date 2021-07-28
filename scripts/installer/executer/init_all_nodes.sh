@@ -19,8 +19,8 @@ function InitNodes(){
     # 安装kubeadm kubectl kubelet
     source ${WorkDir}/executer/install_kubernetes.sh
 
-    # 如果是 master 节点，则安装并配置 keepalived。如果不是高可用集群，主机名为 master，则不用安装 keepalived
-    source ${WorkDir}/executer/install_keepalived.sh
+    # 如果是 master 节点，则安装并配置 vip。
+    source ${WorkDir}/executer/install_vip.sh
 }
 
 echo -e "\033[31m ====> 逐一部署集群中各节点 \033[0m"
