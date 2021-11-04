@@ -5,6 +5,8 @@
 
 **注意：如果想要正常部署，-p 选项必须作为第一个参数，使用 -p 指定所有服务器的密码。**
 
+更多部署文档，详见[语雀文档](https://www.yuque.com/books/share/881ad728-b28a-49ba-94df-67b639c1c7ca/qzanwh)
+
 ## variables 文件说明
 [variables.sh](./variables/variables.sh) 文件中为可变的配置，通过修改该文件中变量值来自定义 k8s 的部署行为。
 
@@ -38,9 +40,9 @@ InsecureRegistries='"registry.tj-test.ehualu.com","172.38.50.130"' # docker 连�
 DefaultAddressPools='10.38.0.0/16' # docker 桥的 IP
 ```
 
-### keepalived 参数
+### VIP 参数
 ```shell
-InterfaceName=ens192 # keepalived 所用网络设备，用于生成 VIP
+InterfaceName=ens192 # 用于生成 VIP 的网络设备名称
 # ens192 可以理解为网卡名，效果如下
 ```
 ```shell
