@@ -102,3 +102,9 @@ RegistryHost='registry.tj-test.ehualu.com'
 * 网络和 DNS 要求：
   * 确保`/etc/resolv.conf` 中的DNS 地址可用。否则，可能会导致集群中的 DNS 出现一些问题。
   * 如果您的网络配置使用防火墙或安全组，您必须确保基础设施组件可以通过特定端口相互通信。建议您关闭防火墙或按照链接配置：[NetworkAccess](docs/network-access.md)。
+
+# 部署完成后操作
+为指定节点添加标签以运行 nginx-ingress-controller
+```bash
+kubectl label nodes node-1.bj-test node-role.kubernetes.io/proxy=ingress-controller
+```
