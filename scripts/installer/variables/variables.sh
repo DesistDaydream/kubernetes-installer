@@ -22,11 +22,11 @@ DefaultAddressPools='10.38.0.0/16'
 
 # VIP 配置
 kubeVIP='v0.3.7'
-InterfaceName='ens3'
+InterfaceName='eth0'
 
 # kubernetes 配置
 CNIPluginVersion='v0.8.7'
-K8SVersion='v1.19.2'
+K8SVersion='v1.19.16'
 ImageRepository='registry.aliyuncs.com/k8sxio'
 DnsDomain='cluster.local'
 ServiceSubnet='10.96.0.0/12'
