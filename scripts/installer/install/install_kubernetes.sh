@@ -55,6 +55,7 @@ function KubernetesInstall(){
 
 # KubernetesConfig 配置 kubernetes 运行环境和参数
 function KubernetesConfig(){
+    mkdir -p /etc/kubernetes/manifests
     source /root/downloads/config/k8s_sysctl_conf.sh
 }
 
