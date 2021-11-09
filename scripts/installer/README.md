@@ -3,9 +3,40 @@
 
 部署前，请参考 variables 章节规划集群配置文件。
 
-**注意：如果想要正常部署，-p 选项必须作为第一个参数，使用 -p 指定所有服务器的密码。**
-
 更多部署文档，详见[语雀文档](https://www.yuque.com/books/share/881ad728-b28a-49ba-94df-67b639c1c7ca/qzanwh)
+
+## 要求和建议
+* 最低资源要求
+  * 2 个 vCPU
+  * 4 GB 内存
+  * 20 GB 存储空间
+
+> * /var/lib/docker 主要用于存放容器数据，在使用和运行过程中会逐渐变大。如果是生产环境，建议 /var/lib/docker 单独挂载一个驱动。
+> * /var/lib/kubelet 主要用于存放 kubelet 数据
+
+* 操作系统要求：
+  * `SSH` 可以访问所有节点。
+  * 所有节点的时间同步。
+  * `sudo`/`curl`/`openssl` 应该在所有节点中使用。
+  * `docker` 可以自己安装，也可以通过 KubeKey 安装。
+  * `Red Hat` 在它的 `Linux release` 中包含了 `SELinux`。建议关闭SELinux或【切换SELinux模式】(./docs/turn-off-SELinux.md)为`Permissive`
+> * 建议您的操作系统是干净的（没有安装任何其他软件），否则可能会发生冲突。  
+> * 如果在 dockerhub.io 下载镜像有问题，建议准备一个容器镜像（加速器）。[为 Docker 守护进程配置注册表镜像](https://docs.docker.com/registry/recipes/mirror/#configure-the-docker-daemon)。
+> * 如果在复制时遇到 `Permission denied`，关闭 SELinux
+
+* 依赖要求：
+
+下面的依赖，使用包管理工具即可安装
+| | |
+| ----------- | ------------------------- |
+| `socat` | 必填 |
+| `conntrack` | 必填 |
+| `ebtables` | 可选但推荐 |
+| `ipset` | 可选但推荐 |
+
+* 网络和 DNS 要求：
+  * 确保`/etc/resolv.conf` 中的DNS 地址可用。否则，可能会导致集群中的 DNS 出现一些问题。
+  * 如果您的网络配置使用防火墙或安全组，您必须确保基础设施组件可以通过特定端口相互通信。建议您关闭防火墙或按照链接配置：[NetworkAccess](docs/network-access.md)。
 
 ## variables 文件说明
 [variables.sh](./variables/variables.sh) 文件中为可变的配置，通过修改该文件中变量值来自定义 k8s 的部署行为。
@@ -47,16 +78,11 @@ InterfaceName=ens192 # 用于生成 VIP 的网络设备名称
 ```
 ```shell
 [root@master-1 pods]# ip a
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-    inet 127.0.0.1/8 scope host lo
-       valid_lft forever preferred_lft forever
-    inet6 ::1/128 scope host
-       valid_lft forever preferred_lft forever
+......
 2: ens192: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
     link/ether 00:0c:29:64:50:5a brd ff:ff:ff:ff:ff:ff
     inet 172.38.40.212/24 brd 172.38.40.255 scope global noprefixroute ens192
-       valid_lft forever preferred_lft forever
+......
 ```
 
 ### 镜像仓库参数，用于配置 hosts 解析
@@ -69,39 +95,15 @@ RegistryHost='registry.tj-test.ehualu.com'
 ### kubernetes 参数
 略
 
-配置完成后，执行 `bash main.sh -p 你的密码 --install` 命令部署 k8s 环境
+# 开始部署
+**注意：如果想要正常部署，-p 选项必须作为第一个参数，使用 -p 指定所有服务器的密码。**
 
-# 要求和建议
-* 最低资源要求
-  * 2 个 vCPU
-  * 4 GB 内存
-  * 20 GB 存储空间
+部署节点依赖 `sshpass` 工具。
 
-> /var/lib/docker 主要用于存放容器数据，在使用和运行过程中会逐渐变大。如果是生产环境，建议 /var/lib/docker 单独挂载一个驱动。
+使用[系统初始化脚本](https://github.com/DesistDaydream/eHualu/blob/master/scripts/1-sys-init-v1.8.sh)初始化每一个节点
 
-* 操作系统要求：
-  * `SSH` 可以访问所有节点。
-  * 所有节点的时间同步。
-  * `sudo`/`curl`/`openssl` 应该在所有节点中使用。
-  * `docker` 可以自己安装，也可以通过 KubeKey 安装。
-  * `Red Hat` 在它的 `Linux release` 中包含了 `SELinux`。建议关闭SELinux或【切换SELinux模式】(./docs/turn-off-SELinux.md)为`Permissive`
-> * 建议您的操作系统是干净的（没有安装任何其他软件），否则可能会发生冲突。  
-> * 如果在dockerhub.io 下载镜像有问题，建议准备一个容器镜像（加速器）。[为 Docker 守护进程配置注册表镜像](https://docs.docker.com/registry/recipes/mirror/#configure-the-docker-daemon)。
-> * 如果在复制时遇到`Permission denied`，建议先勾选【SELinux 并关闭】(./docs/turn-off-SELinux.md) 
+配置 [variables](./variables/variables.sh) 文件完成后，执行 `bash main.sh -p 你的密码 --install` 命令部署 k8s 环境
 
-* 依赖要求：
-
-下面的依赖，使用包管理工具即可安装
-| | |
-| ----------- | ------------------------- |
-| `socat` | 必填 |
-| `conntrack` | 必填 |
-| `ebtables` | 可选但推荐 |
-| `ipset` | 可选但推荐 |
-
-* 网络和 DNS 要求：
-  * 确保`/etc/resolv.conf` 中的DNS 地址可用。否则，可能会导致集群中的 DNS 出现一些问题。
-  * 如果您的网络配置使用防火墙或安全组，您必须确保基础设施组件可以通过特定端口相互通信。建议您关闭防火墙或按照链接配置：[NetworkAccess](docs/network-access.md)。
 
 # 部署完成后操作
 为指定节点添加标签以运行 nginx-ingress-controller

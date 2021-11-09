@@ -12,13 +12,6 @@ function EnviromentInit(){
     swapoff -a
     sed -i 's@^[^#]\(.*swap.*\)@#\1@g' /etc/fstab
 
-    cat > /etc/security/limits.d/max-openfile.conf  << EOF
-* soft nproc 1000000
-* hard nproc 1000000
-* soft nofile 1000000
-* hard nofile 1000000
-EOF
-
     cat > /etc/modules-load.d/ip_vs.conf << EOF
 ip_vs
 ip_vs_lblc
