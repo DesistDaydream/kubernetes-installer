@@ -58,7 +58,6 @@ spec:
     - name: vip_address
       value: ${VIP}
     image: plndr/kube-vip:v0.3.7
-    imagePullPolicy: Always
     name: kube-vip
     resources: {}
     securityContext:
