@@ -17,7 +17,7 @@ online='no'
 
 # docker 配置
 DockerVersion='19.03.11'
-InsecureRegistries='"registry.tj-test.ehualu.com","172.38.50.130"'
+InsecureRegistries='"registry.bj-test.datalake.cn","172.19.42.218"'
 DefaultAddressPools='10.38.0.0/16'
 
 # VIP 配置
@@ -36,19 +36,19 @@ PodSubnet='10.244.0.0/16'
 FlannelType='host-gw'
 
 # 镜像仓库配置,用于配置 hosts 文件
-RegistryIP='172.38.50.130'
-RegistryHost='registry.tj-test.ehualu.com'
+RegistryIP='172.19.42.218'
+RegistryHost='registry.bj-test.datalake.cn'
 
 # 测试
 Masters=(
-'172.19.42.207=master-1'
-'172.19.42.208=master-2'
-'172.19.42.209=master-3'
+'172.19.42.231=master-1.bj-test'
+'172.19.42.232=master-2.bj-test'
+'172.19.42.233=master-3.bj-test'
 )
 Nodes=(
-'172.19.42.246=node-1'
-'172.19.42.247=node-2'
-'172.19.42.244=node-3'
+'172.19.42.234=node-1.bj-test'
+'172.19.42.235=node-2.bj-test'
+'172.19.42.236=node-3.bj-test'
 )
-Domain='k8s-api.bj-test-2.datalake.cn'
-VIP='172.19.42.206'
+Domain='k8s-api.bj-test.datalake.cn'
+VIP='172.19.42.230'
