@@ -1,0 +1,19 @@
+- name: 初始化第一个 mater 节点
+  block:
+  - name: 发送kubeadm-config文件
+    template:
+      src: kubeadm-config.yaml.jinja
+      dest: /root/kubernetes/kubeadm-config.yaml
+  - name: 初始化第一个 master 节点
+    shell: kubeadm init --config=/root/kubernetes/kubeadm-config.yaml --upload-certs
+  - name: 应用 kubectl 配置文件
+    copy:
+      remote_src: true
+      src: /etc/kubernetes/admin.conf
+      dest: /root/.kube/config
+    tags: config-kubectl
+  when:
+  - inventory_hostname == groups['k8s_master'][0]
+  tags:
+  - k8s-init
+

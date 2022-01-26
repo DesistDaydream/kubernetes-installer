@@ -1,0 +1,130 @@
+- name: 检查目标主机是否满足部署需求
+  import_tasks: check.yaml
+  tags:
+  - check
+
+- name: 设置主机名
+  hostname:
+    name: '{{inventory_hostname}}'
+
+- name: 配置/etc/hosts文件
+  template:
+    src: hosts.j2
+    dest: /etc/hosts
+  tags:
+  - hosts
+
+- name: 关闭swap
+  shell: swapoff -a
+
+- name: 禁用swap
+  lineinfile: 
+    dest: /etc/fstab
+    regexp: "([^#].*swap.*)"
+    line: '#\1'
+    backrefs: yes
+
+- name: 配置ipvs模块
+  block: 
+  - name: 发送模块配置文件
+    copy: 
+      src: ip_vs.conf
+      dest: /etc/modules-load.d/ip_vs.conf
+  - name: 加载模块  
+    vars:
+      info: "{{ lookup('file', 'ip_vs.conf').splitlines() }}"
+    shell: modprobe {{ item }}
+    loop: "{{ info }}" 
+  when: Proxy.Mode == "ipvs"
+  tags:
+  - ipvs
+
+- name: 生成内核参数文件
+  template:
+    src: k8s-sysctl.conf.jinja
+    dest: /etc/sysctl.d/k8s-sysctl.conf
+
+- name: 应用内核参数
+  shell: sysctl -p /etc/sysctl.d/k8s-sysctl.conf
+  ignore_errors: yes
+
+
+- name: 创建目录
+  file: 
+    name: "{{ item }}"
+    state: directory
+  with_items:
+  - /opt/cni/bin
+  - /usr/lib/systemd/system/kubelet.service.d
+  - /root/kubernetes/CNI
+  - ~/.kube
+
+- name: 离线安装k8s工具三件套
+  block:
+  - name: 拷贝kube三件套
+    copy:
+      src: "{{ item }}"
+      dest: "/usr/bin/"
+      mode: 0755
+    with_fileglob:
+    - "kube_binary_files/*"
+  - name: 解压CNI二进制文件
+    unarchive:
+      src: "cni-plugins-linux-amd64-{{ cni_plugin_version }}.tgz"
+      dest: /opt/cni/bin/
+  - name: config files
+    template:
+      src: "{{ item.src }}"
+      dest: "{{ item.dest }}"
+      lstrip_blocks: true
+      trim_blocks: true
+    with_items:
+    - {src: 'kubelet.service.jinja',dest: '/usr/lib/systemd/system/kubelet.service'}
+    - {src: '10-kubeadm.conf.jinja',dest: '/usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf'}
+
+- name: 配置kubelet开机自启
+  systemd: 
+    daemon_reload: yes
+    name: kubelet
+    state: started
+    enabled: yes
+
+- name: 配置master
+  block:
+  - name: 创建manifests目录
+    file: 
+      name: /etc/kubernetes/manifests
+      state: directory
+  - name: 创建 kube-vip.yaml 文件
+    template:
+      src: "kube-vip.yaml.jinja"
+      dest: "/etc/kubernetes/manifests/kube-vip.yaml"
+  - name: ansible 控制端添加 kubectl 自动补全
+    lineinfile:
+      dest: ~/.bashrc
+      state: present
+      regexp: 'kubectl completion'
+      line: 'source <(kubectl completion bash)'
+    ignore_errors: true   
+  when: 
+  - inventory_hostname in groups['k8s_master']
+
+- name: 为每个节点加载容器镜像
+  block:
+  - name: 拷贝集群镜像到所有节点
+    copy:
+      src: "k8s-images-v{{ kubernetes_version }}.tar.gz"
+      dest: /root/
+  - name: 加载镜像
+    shell: docker load -i /root/k8s-images-v{{ kubernetes_version }}.tar.gz
+  when: install_method == "offline"
+
+- name: 初次部署集群时，执行初始化任务
+  import_role:
+    name: "init-master"
+  when: first_deploy == "yes"
+
+- name: 初次部署集群时，执行 master 节点加入集群任务
+  import_role:
+    name: "join-master"
+  when: first_deploy == "yes"

@@ -1,0 +1,11 @@
+- name: Ubuntu 更新系统
+  apt:
+    upgrade: "dist"
+    update_cache: "yes"
+
+- name: 使用 apt 安装工具
+  apt:
+    name: ['acl','chrony','conntrack','bash-completion','bind9-dnsutils','iotop','iperf3','ipvsadm','lsof','nmap','psmisc','sshpass','socat','strace','sysstat','tar','tcpdump','telnet','tree','vim']
+    state: latest
+  tags:
+  - apt

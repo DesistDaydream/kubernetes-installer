@@ -1,0 +1,42 @@
+- name: 生成用于 Master 节点加入集群的命令
+  block:
+  - name: 注册 master_join_key
+    shell: "kubeadm init phase upload-certs --upload-certs  2> /dev/null | awk 'END {print}'"
+    register: master_join_key
+  - debug:
+      msg: "{{ master_join_key['stdout'] }}"
+  - name: 注册 master_join_cmd
+    shell: "kubeadm token create --ttl=2h --certificate-key={{ master_join_key['stdout'] }} --print-join-command  2> /dev/null"
+    register: master_join_cmd
+  - debug:
+      msg: "{{ master_join_cmd['stdout'] }}"
+  when:
+  - inventory_hostname == groups['k8s_master'][0]
+  tags:
+  - gen-join-master-cmd
+
+- name: 通过 kube-proxy 检查待加入集群的 Master 节点是否干净
+  shell: curl --silent --max-time 2 http://127.0.0.1:10249/healthz
+  register: check_master
+  when:
+  - inventory_hostname in groups['k8s_master']
+  - inventory_hostname != groups['k8s_master'][0]
+  ignore_errors: true
+
+- debug:
+    msg: "当前 inventory 中定义的工作节点都已在 Kubernetes 集群中"
+  when:
+  - inventory_hostname in groups['k8s_master']
+  - inventory_hostname != groups['k8s_master'][0]
+  - check_master is success
+
+- name: 加入其他 master 节点到集群中
+  # debug:
+  #   msg: "{{ hostvars[groups['k8s_master'][0]]['master_join_cmd']['stdout'] }}"
+  shell: "{{ hostvars[groups['k8s_master'][0]]['master_join_cmd']['stdout'] }} --ignore-preflight-errors=DirAvailable--etc-kubernetes-manifests"
+  when:
+  - inventory_hostname != groups['k8s_master'][0]
+  - inventory_hostname in groups['k8s_master']
+  - check_master is failure
+  tags:
+  - join-master

@@ -1,0 +1,32 @@
+- name: 生成用于 Node 节点加入集群的命令
+  block:
+  - name: 注册 node_join_cmd
+    shell: "kubeadm token create --ttl=2h --print-join-command 2> /dev/null"
+    register: node_join_cmd
+  - debug:
+      msg: "{{ node_join_cmd['stdout'] }}"
+  when:
+  - inventory_hostname == groups['k8s_master'][0]
+  tags:
+  - gen-join-node-cmd
+
+- name: 通过 kube-proxy 检查待加入集群的 Work 节点是否干净
+  shell: curl --silent --max-time 2 http://127.0.0.1:10249/healthz
+  register: check_work
+  when:
+  - inventory_hostname in groups['k8s_node']
+  ignore_errors: true
+
+- debug:
+    msg: "当前 inventory 中定义的工作节点都已在 Kubernetes 集群中"
+  when:
+  - inventory_hostname in groups['k8s_node']
+  - check_work is success
+
+- name: 加入 node  节点到集群中
+  shell: "{{ hostvars[groups['k8s_master'][0]]['node_join_cmd']['stdout'] }}"
+  when:
+  - inventory_hostname in groups['k8s_node']
+  - check_work is failure
+  tags:
+  - join-node

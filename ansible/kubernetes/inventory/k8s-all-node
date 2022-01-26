@@ -1,0 +1,18 @@
+[k8s_master]
+test-node-1 ansible_host=172.19.42.231
+test-node-2 ansible_host=172.19.42.232
+test-node-3 ansible_host=172.19.42.233
+
+[k8s_node]
+test-node-4 ansible_host=172.19.42.234
+test-node-5 ansible_host=172.19.42.235
+test-node-6 ansible_host=172.19.42.236
+# test ansible_host=172.19.42.246
+
+
+[k8s_all_node:children]
+k8s_master
+k8s_node
+[k8s_all_node:vars]
+ansible_user=root
+ansible_password=Oc.com123

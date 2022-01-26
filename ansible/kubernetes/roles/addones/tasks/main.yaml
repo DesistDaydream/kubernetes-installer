@@ -1,0 +1,6 @@
+- name: 创建 flannel.yaml 文件
+  template:
+    src: "flannel.yaml.jinja"
+    dest: "/root/kubernetes/CNI/flannel.yaml"
+- name: 应用
+  shell: "kubectl apply -f /root/kubernetes/CNI/flannel.yaml"

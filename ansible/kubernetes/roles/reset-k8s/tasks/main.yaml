@@ -1,0 +1,3 @@
+- name: 重设 kubernetes 集群
+  script: reset.sh
+    

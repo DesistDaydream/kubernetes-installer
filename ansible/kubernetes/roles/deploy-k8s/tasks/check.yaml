@@ -1,0 +1,17 @@
+- name: 检查 socat 与 conntrack 是否安装
+  shell: socat -V > /dev/null && conntrack -V > /dev/null
+  register: check_socat_and_conntrack_result
+  ignore_errors: true
+
+- ansible.builtin.fail:
+    msg: "请安装 socat 与 conntrack"
+  when: check_socat_and_conntrack_result is failure
+
+- name: 检查各节点是否干净
+  shell: curl --silent --max-time 2 http://127.0.0.1:10249/healthz
+  register: check_cluster_clean
+  ignore_errors: true
+
+- ansible.builtin.fail:
+    msg: "请执行 reset-k8s 剧本清理集群所有节点"
+  when: check_cluster_clean is success

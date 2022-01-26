@@ -1,0 +1,4 @@
+- hosts: test-node-1 
+  gather_facts: no
+  roles:
+  - addones

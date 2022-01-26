@@ -1,0 +1,11 @@
+- name: 重启chronyd服务
+  systemd:
+    daemon_reload: yes
+    name: chronyd
+    state: restarted
+    enabled: yes
+- name: 重启sshd服务
+  systemd:
+    daemon_reload: yes
+    name: sshd
+    state: restarted

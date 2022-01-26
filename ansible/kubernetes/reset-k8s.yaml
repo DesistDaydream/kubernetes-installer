@@ -1,0 +1,4 @@
+- hosts: k8s_all_node
+  gather_facts: no
+  roles:
+  - reset-k8s
