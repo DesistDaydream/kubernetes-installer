@@ -1,0 +1,17 @@
+root = "{{ containerd["root_dir"] }}"
+state = "{{ containerd["state_dir"] }}"
+version = 2
+
+[grpc]
+  address = "{{ containerd["state_dir"] }}/containerd.sock"
+
+[plugins]
+  [plugins."io.containerd.grpc.v1.cri"]
+    sandbox_image = "{{ containerd["sandbox_image"] }}"
+    [plugins."io.containerd.grpc.v1.cri".containerd]
+      [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
+        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+          [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+            SystemdCgroup = {{ containerd["systemd_cgroup"] }}
+    [plugins."io.containerd.grpc.v1.cri".registry]
+      config_path = "/etc/containerd/registry.d"

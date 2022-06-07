@@ -1,6 +1,6 @@
-- name: 重启docker服务
-  systemd: 
+- name: restart-containerd
+  systemd:
     daemon_reload: yes
-    name: docker
+    name: containerd
     state: restarted
     enabled: yes

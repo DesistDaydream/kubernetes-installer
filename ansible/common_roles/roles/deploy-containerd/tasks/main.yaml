@@ -1,0 +1,59 @@
+# - name: 在线安装containerd
+#   block:
+#     - name: 安装containerd所需依赖
+#       yum:
+#         name: ['yum-utils', 'device-mapper-persistent-data', 'lvm2']
+#         update_cache: 'yes'
+#         state: 'latest'
+#     - name: 添加docker源
+#       shell: yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+#     - name: 安装docker-ce
+#       yum:
+#         name: 'docker-ce-{{docker.version}}'
+#         state: present
+#   when: offline == "no"
+
+- name: 离线安装containerd
+  block:
+    - name: 解压软件包
+      unarchive:
+        src: "{{ base_dir }}/containerd-ehualu-{{containerd.version}}.tar.gz"
+        dest: "/"
+  when: offline == "yes"
+  tags:
+    - offline-install
+
+- name: 创建Containerd配置文件目录
+  file:
+    path: /etc/containerd/registry.d
+    state: directory
+
+- name: 配置Containerd
+  template:
+    src: "{{item.src}}"
+    dest: "{{item.dest}}"
+    lstrip_blocks: true
+    trim_blocks: true
+  with_items:
+    - src: 'config.toml.jinja'
+      dest: '/etc/containerd/config.toml'
+    #   dest: '/tmp/containerd/config.toml'
+    - src: 'crictl.yaml.jinja'
+      dest: '/etc/crictl.yaml'
+    #   dest: '/tmp/containerd/crictl.yaml'
+    - src: 'containerd.service.jinja'
+      dest: '/etc/systemd/system/containerd.service'
+    #   dest: '/tmp/containerd/containerd.service'
+  notify:
+    - restart-containerd
+  tags:
+    - config
+
+- name: 配置私有镜像注册中心
+  include_tasks:
+    file: "insecure_registries.yaml"
+  vars:
+    insecure_registry: "{{ item }}"
+  loop: "{{ containerd['insecure_registries'] }}"
+  tags:
+    - insecure_registries

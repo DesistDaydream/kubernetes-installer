@@ -1,0 +1,5 @@
+server = "{{ insecure_registry }}"
+
+[host."{{ insecure_registry }}"]
+  capabilities = ["pull", "resolve", "push"]
+  skip_verify = true

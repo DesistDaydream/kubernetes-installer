@@ -1,17 +1,17 @@
 offline: "yes"
-docker:
-  version: 20.10.9
-  data_dir: /var/lib/docker
+base_dir: "/root/base_dir"
+bin_dir: "/usr/local/bin"
+
+containerd:
+  version: "1.5.9"
+  root_dir: "/var/lib/containerd"
+  state_dir: "/run/containerd"
+  systemd_cgroup: "true"
+  sandbox_image: "registry.aliyuncs.com/dd_k8s/pause:3.6"
+
   registry_mirrors:
-  - 'https://ac1rmo5p.mirror.aliyuncs.com'
-  exec_opts:
-  - 'native.cgroupdriver=systemd'
+    - "https://ac1rmo5p.mirror.aliyuncs.com"
   insecure_registries:
-  - 'registry-test.ehualu.com'
-  - '172.38.50.130'
-  default_address_pools: '10.38.0.0/16'
-  log_opts:
-    max_size: "50m"
-    max_file: "5"
-docker_service:
-  options: '--default-ulimit nofile=1000000:1000000'
+    - "registry-test.ehualu.com"
+    - "172.38.50.130"
+  default_address_pools: "10.38.0.0/16"

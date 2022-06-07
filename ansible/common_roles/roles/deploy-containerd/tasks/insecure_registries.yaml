@@ -1,0 +1,10 @@
+- name: 创建目录
+  file:
+    path: "/etc/containerd/registry.d/{{ insecure_registry }}"
+    state: directory
+- name: 创建文件
+  template:
+    src: "hosts.toml.jinja"
+    dest: "/etc/containerd/registry.d/{{ insecure_registry }}/hosts.toml"
+    lstrip_blocks: true
+    trim_blocks: true
