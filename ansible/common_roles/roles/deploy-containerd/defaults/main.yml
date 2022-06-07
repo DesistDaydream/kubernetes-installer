@@ -1,9 +1,9 @@
 offline: "yes"
-base_dir: "/root/base_dir"
+base_dir: "/mnt/d/work/eHualu/base_dir"
 bin_dir: "/usr/local/bin"
 
 containerd:
-  version: "1.5.9"
+  version: "1.6.6"
   root_dir: "/var/lib/containerd"
   state_dir: "/run/containerd"
   systemd_cgroup: "true"

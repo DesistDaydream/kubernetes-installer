@@ -1,39 +1,93 @@
 - name: CentOS 更新系统
   yum:
-    name: '*'
+    name: "*"
     state: latest
-    update_cache: 'yes'
+    update_cache: "yes"
 
 - name: 使用 yum 安装工具
   yum:
-    name: ['chrony','conntrack-tools','bash-completion','bind-utils','iotop','iperf3','ipvsadm','lsof','nmap-ncat','perf','psmisc','sshpass','socat','strace','sysstat','tar','tcpdump','telnet','tree','vim']
+    name:
+      [
+        "chrony",
+        "conntrack-tools",
+        "bash-completion",
+        "bind-utils",
+        "iotop",
+        "iperf3",
+        "ipvsadm",
+        "lsof",
+        "nmap-ncat",
+        "perf",
+        "psmisc",
+        "sshpass",
+        "socat",
+        "strace",
+        "sysstat",
+        "tar",
+        "tcpdump",
+        "telnet",
+        "tree",
+        "vim",
+      ]
     state: latest
   tags:
-  - yum
+    - yum
 
 - name: 配置系统
   block:
-  - name: 禁用SELinux
-    lineinfile:
-      dest: /etc/selinux/config
-      regexp: "^SELINUX=.*"
-      line: "SELINUX=disabled"
-  - name: 关闭SELinux
-    shell: "setenforce 0"
-    failed_when: false
-  - name: 配置内核参数
-    template:
-      src: custom_ops.conf.jinja
-      dest: /etc/sysctl.d/custom_ops.conf
-  - name: 应用内核参数
-    shell: sysctl -p /etc/sysctl.d/*
-  - name: 配置环境变量
-    template:
-      src: custom_ops.sh.jinja
-      dest: /etc/profile.d/custom_ops.sh
-  - name: 设定ulimit参数
-    template:
-      src: custom_limits.conf.jinja
-      dest: /etc/security/limits.d/custom_limits.conf
+    - name: 禁用SELinux
+      lineinfile:
+        dest: /etc/selinux/config
+        regexp: "^SELINUX=.*"
+        line: "SELINUX=disabled"
+    - name: 关闭SELinux
+      shell: "setenforce 0"
+      failed_when: false
+    - name: 配置内核参数
+      template:
+        src: custom_ops.conf.jinja
+        dest: /etc/sysctl.d/custom_ops.conf
+    - name: 应用内核参数
+      shell: sysctl -p /etc/sysctl.d/*
+    - name: 配置环境变量
+      template:
+        src: custom_ops.sh.jinja
+        dest: /etc/profile.d/custom_ops.sh
+    - name: 设定ulimit参数
+      template:
+        src: custom_limits.conf.jinja
+        dest: /etc/security/limits.d/custom_limits.conf
   tags:
-  - config_system
+    - config_system
+
+- name: 配置chrony
+  block:
+    - name: centos7 配置chrony
+      template:
+        src: chrony-7.conf.jinja
+        dest: /etc/chrony.conf
+        backup: yes
+      notify:
+        - 重启chronyd服务
+      when: os_distribution_version.stdout_lines[0] == "7"
+    - name: centos8 配置chrony
+      template:
+        src: chrony-8.conf.jinja
+        dest: /etc/chrony.conf
+        backup: yes
+      notify:
+        - 重启chronyd服务
+      when: os_distribution_version.stdout_lines[0] == "8"
+  tags:
+    - centos-chrony
+
+- name: 配置服务
+  block:
+    - name: 关闭指定自启
+      systemd:
+        name: "{{item}}"
+        enabled: "no"
+        state: stopped
+      loop:
+        - firewalld.service
+        - postfix.service

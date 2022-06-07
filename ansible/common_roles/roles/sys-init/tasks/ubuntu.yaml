@@ -5,7 +5,74 @@
 
 - name: 使用 apt 安装工具
   apt:
-    name: ['acl','chrony','conntrack','bash-completion','bind9-dnsutils','iotop','iperf3','ipvsadm','lsof','nmap','psmisc','sshpass','socat','strace','sysstat','tar','tcpdump','telnet','tree','vim']
+    name:
+      [
+        "acl",
+        "chrony",
+        "conntrack",
+        "bash-completion",
+        "iotop",
+        "iperf3",
+        "ipvsadm",
+        "lsof",
+        "nmap",
+        "psmisc",
+        "sshpass",
+        "socat",
+        "strace",
+        "sysstat",
+        "tar",
+        "tcpdump",
+        "telnet",
+        "tree",
+        "vim",
+      ]
     state: latest
+    update_cache: "yes"
   tags:
-  - apt
+    - apt
+- name: 使用 apt 安装工具
+  apt:
+    name: ["bind9-dnsutils"]
+    state: latest
+    update_cache: "yes"
+  tags:
+    - apt
+  when:
+    - os_distribution_version.stdout_lines[0] != "18.04"
+
+- name: 禁用系统自动更新
+  block:
+    - name: 禁用系统自动更新
+      replace:
+        path: "/etc/apt/apt.conf.d/10periodic"
+        regexp: "1"
+        replace: "0"
+    - name: 禁用系统自动更新
+      replace:
+        path: "/etc/apt/apt.conf.d/20auto-upgrades"
+        regexp: "1"
+        replace: "0"
+  tags:
+    - disable-autoupdates
+
+- name: 配置chrony
+  template:
+    src: chrony-ubuntu.conf.jinja
+    dest: /etc/chrony/chrony.conf
+    backup: yes
+  notify:
+    - 重启chronyd服务
+  tags:
+    - ubuntu-chrony
+
+- name: 配置服务
+  block:
+    - name: 禁用并停止服务
+      systemd:
+        name: "{{item}}"
+        enabled: "no"
+        state: stopped
+      loop:
+        - cloud-init.service
+        - unattended-upgrades.service

@@ -1,0 +1,15 @@
+[k8s_master]
+wx-test-ssc-master-1 ansible_host=10.253.26.145
+
+
+[k8s_node]
+wx-test-ssc-node-1 ansible_host=10.253.26.146
+wx-test-ssc-node-2 ansible_host=10.253.26.147
+wx-test-ssc-node-3 ansible_host=10.253.26.148
+
+[k8s_all_node:children]
+k8s_master
+k8s_node
+[k8s_all_node:vars]
+ansible_user=root
+ansible_password={{ wx_test_ssc_mobile_password }}

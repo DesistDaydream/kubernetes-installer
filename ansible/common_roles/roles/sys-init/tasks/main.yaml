@@ -1,114 +1,93 @@
 - name: 设置主机名
   hostname:
-    name: '{{inventory_hostname}}'
+    name: "{{ inventory_hostname }}"
+  tags:
+    - set-hostname
 
 - name: 注册变量
   block:
-  - name: 发行版信息
-    shell: cat /etc/os-release | grep -e ^ID= | tr -d "\"" | awk -F= '{print $2}'
-    register: os_distribution
-  - name: 发行版版本信息
-    shell: cat /etc/os-release | grep VERSION_ID | tr -d "\"" | awk -F= '{print $2}'
-    register: os_distribution_version
-  - debug:
-      msg: "{{ os_distribution['stdout'] }}"
+    - name: 发行版信息
+      shell: cat /etc/os-release | grep -e ^ID= | tr -d "\"" | awk -F= '{print $2}'
+      register: os_distribution
+    - name: 发行版版本信息
+      shell: cat /etc/os-release | grep VERSION_ID | tr -d "\"" | awk -F= '{print $2}'
+      register: os_distribution_version
+    - debug:
+        msg: "{{ os_distribution['stdout'] }}"
   tags:
-  - register-distribution
+    - register-distribution
 
 - name: CentOS 更新系统，安装工具，配置参数
-  include_tasks: centos.yaml
+  include: centos.yaml
   when: os_distribution['stdout'] == "centos"
   tags:
-  - install-package
+    - config-os
 
 - name: Ubuntu 更新系统，安装工具，配置参数
-  include_tasks: ubuntu.yaml
+  include: ubuntu.yaml
   when: os_distribution['stdout'] == "ubuntu"
   tags:
-  - install-package
+    - config-os
 
 - name: 配置普通用户
   block:
-  - name: 添加组
-    group:
-      name: "{{item.name}}"
-      gid: "{{item.gid}}"
-    with_items:
-    - {name: 'developer',gid: 1500}
-    - {name: 'sudo',gid: 27}
-  - name: Ubuntu 添加组
-    group:
-     name: wheel
-    when: os_distribution['stdout'] == "ubuntu"
-  - name: 添加用户
-    user:
-      name: developer
-      # password is:developer
-      password: "$6$mysecretsalt$QjSLl.VQoxPKJkBE9.oLX82C5P4tAMH8UfFRpkxgkqSg2GNob8Y39hj5/cl7o0gbpPXVBGaB9oLuCPfVhIhyA0"
-      uid: 1500
-      group: developer
-      groups: 'wheel,sudo'
-    tags:
-    - tmp
-  - name: 配置用户
-    template:
-      src: "{{item.src}}"
-      dest: "{{item.dest}}"
-    with_items:
-    - {src: 'custom_developer.sh.jinja',dest: '/etc/profile.d/custom_developer.sh'}
-    - {src: 'developer.jinja',dest: '/etc/sudoers.d/developer'}
-  - name: 配置 ACL
-    shell: 'setfacl -R -m g:developer:rwx /opt'
-  - name: 删除ftp用户
-    user:
-      name: ftp
-      state: absent
-      remove: yes
+    - name: 添加组
+      group:
+        name: "{{item.name}}"
+        gid: "{{item.gid}}"
+      with_items:
+        - name: "developer"
+          gid: 1500
+        - name: "sudo"
+          gid: 27
+    - name: Ubuntu 添加组
+      group:
+        name: wheel
+        gid: 1010
+      when: os_distribution['stdout'] == "ubuntu"
+    - name: 添加用户
+      user:
+        name: developer
+        # password is: developer
+        password: "$6$mysecretsalt$QjSLl.VQoxPKJkBE9.oLX82C5P4tAMH8UfFRpkxgkqSg2GNob8Y39hj5/cl7o0gbpPXVBGaB9oLuCPfVhIhyA0"
+        uid: 1500
+        group: developer
+        groups: "wheel,sudo"
+      tags:
+        - tmp
+    - name: 配置用户
+      template:
+        src: "{{item.src}}"
+        dest: "{{item.dest}}"
+      with_items:
+        - src: "custom_developer.sh.jinja"
+          dest: "/etc/profile.d/custom_developer.sh"
+        - src: "developer.jinja"
+          dest: "/etc/sudoers.d/developer"
+    - name: 配置 ACL
+      shell: "setfacl -R -m g:developer:rwx /opt"
+    - name: 删除ftp用户
+      user:
+        name: ftp
+        state: absent
+        remove: yes
   tags:
-  - users
-
-- name: 配置服务自启
-  block:
-  - name: 关闭指定自启
-    systemd:
-      name: "{{item}}"
-      enabled: 'no'
-    loop:
-    - firewalld.service
-    - postfix.service
-    ignore_errors: yes
+    - users
 
 - name: 配置sshd
   lineinfile:
-    dest: /etc/ssh/sshd_config
+    path: /etc/ssh/sshd_config
     regexp: ".*UseDNS.*"
     line: "UseDNS no"
   notify:
-  - 重启sshd服务
-
-- name: 配置chrony
-  block:
-  - name: centos7 配置chrony
-    template:
-      src: chrony-7.conf.jinja
-      dest: /etc/chrony.conf
-    notify:
-    - 重启chronyd服务
-    when: os_distribution_version.stdout_lines[0] == "7"
-  - name: centos8 配置chrony
-    template:
-      src: chrony-8.conf.jinja
-      dest: /etc/chrony.conf
-    notify:
-    - 重启chronyd服务
-    when: os_distribution_version.stdout_lines[0] == "8"
-  tags:
-  - chrony
+    - 重启sshd服务
 
 - name: 安全配置
   block:
-  - name: 执行安全脚本
-    script: security.sh
+    - name: 执行安全脚本
+      script: security.sh
   tags:
-  - security
-  when: os_distribution['stdout'] == "centos"
+    - security
+  when:
+    - os_distribution['stdout'] == "centos"
+    - os_distribution_version.stdout_lines[0] == "7"

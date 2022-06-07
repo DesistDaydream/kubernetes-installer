@@ -1,0 +1,1 @@
+直接使用 `ansible -i inventory/test all -m ping -e @inventory/password` 命令以使用本地的密码文件
