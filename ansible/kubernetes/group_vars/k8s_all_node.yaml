@@ -3,13 +3,15 @@ first_deploy: "yes"
 
 master_vip: "172.19.42.230"
 master_vip_interface: "eth0"
-kubernetes_domain: 'k8s-api.bj-test.datalake.cn'
+kubernetes_domain: "k8s-api.bj-test.datalake.cn"
 
 kubernetes_version: "1.19.16"
-image_repository: 'registry.aliyuncs.com/k8sxio'
+image_repository: "registry.aliyuncs.com/k8sxio"
 pod_subnet: 10.244.0.0/16
-service_subnet: '10.96.0.0/12'
-Proxy:
-  Mode: "ipvs"
+service_subnet: "10.96.0.0/12"
+proxy:
+  mode: "ipvs"
 
 cni_plugin_version: "v0.8.7"
+
+kube_vip_version: "v0.3.7"

@@ -34,7 +34,7 @@ spec:
       value: "1"
     - name: vip_address
       value: {{ master_vip }}
-    image: plndr/kube-vip:v0.3.7
+    image: plndr/kube-vip:{{ kube_vip_version }}
     name: kube-vip
     resources: {}
     securityContext:
